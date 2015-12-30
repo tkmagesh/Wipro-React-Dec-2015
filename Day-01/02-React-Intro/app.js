@@ -10,12 +10,15 @@ var ProductList = React.createClass({
         productList.push(newProductName);
         this.setState({list : productList});
     },
+    onSelect : function(product){
+        this.setState({selectedProduct : product});
+    },
     render : function(){
         var productItems = this.state.list.map(function(productName){
             return (
-                <ProductItem name={productName}></ProductItem>
+                <ProductItem name={productName} select={this.onSelect}></ProductItem>
             );
-        });
+        }.bind(this));
         return (
             <div>
                 <label>Name :</label>
@@ -25,7 +28,7 @@ var ProductList = React.createClass({
                     {productItems}
                 </ol>
                 <div>Total Number of Products : {this.state.list.length}</div>
-                <h4>Selected Product : [selected Product is displayed here]</h4>
+                <h4>Selected Product : {this.state.selectedProduct}</h4>
             </div>
         )
     }
@@ -36,7 +39,7 @@ var ProductItem = React.createClass({
         return (
             <li>
               <span>{this.props.name}</span>
-              <input type="button" value="Select" />
+              <input type="button" value="Select" onClick={this.props.select.bind(null, this.props.name)} />
             </li>
         );
     }
