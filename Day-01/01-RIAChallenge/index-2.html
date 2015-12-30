@@ -61,6 +61,8 @@
 
     $(function(){
         window.calculator = new SalaryCalculator();
+
+        //Reacting to User Actions
         $("#txtBasic").change(function(){
             calculator.set('basic', this.value.toInt());
         });
@@ -77,6 +79,7 @@
             calculator.calculate();
         });
 
+        //Reacting to Model changes
         calculator.onChange('basic', function(){
             $("#txtBasic").val(calculator.get('basic'));
         });
