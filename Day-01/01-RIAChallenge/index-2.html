@@ -102,6 +102,16 @@
             });
         }
     }
+
+    $(function(){
+        window.calculator = new SalaryCalculator();
+
+        var view1 = new SalaryCalculatorView(calculator, $("#view1"));
+        view1.init();
+
+        var view2 = new SalaryCalculatorView(calculator, $("#view2"));
+        view2.init();
+    });
     </script>
 </head>
 <body>
