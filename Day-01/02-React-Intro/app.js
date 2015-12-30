@@ -1,36 +1,44 @@
-var App = React.createClass({
+var ProductList = React.createClass({
+    getInitialState : function(){
+        return {
+            list : []
+        }
+    },
+    onAddProduct : function(){
+        var newProductName = this.refs.txtProductName.value;
+        var productList = this.state.list;
+        productList.push(newProductName);
+        this.setState({list : productList});
+    },
     render : function(){
-        console.log("rendering App");
+        var productItems = this.state.list.map(function(productName){
+            return (
+                <ProductItem name={productName}></ProductItem>
+            );
+        });
         return (
             <div>
-                <h1>React App Demo</h1>
-                <Spinner></Spinner>
+                <label>Name :</label>
+                <input type="text" ref="txtProductName" />
+                <input type="button" value="Add Product" onClick={this.onAddProduct} />
+                <ol>
+                    {productItems}
+                </ol>
+                <div>Total Number of Products : {this.state.list.length}</div>
+                <h4>Selected Product : [selected Product is displayed here]</h4>
             </div>
         )
     }
 });
 
-var Spinner = React.createClass({
-    getInitialState : function(){
-        return { count : 0};
-    },
-    increment : function(){
-        this.setState({count : ++this.state.count});
-        console.log(this.state);
-    },
-    decrement : function(){
-
-    },
+var ProductItem = React.createClass({
     render : function(){
-        console.log("rendering Spinner");
         return (
-            <div>
-                <h3>Spinner</h3>
-                <input type="button" value="Up" onClick={this.increment}/>
-                <input type="button" value="Down" />
-                <div>{this.state.count}</div>
-            </div>
-        )
+            <li>
+              <span>{this.props.name}</span>
+              <input type="button" value="Select" />
+            </li>
+        );
     }
 })
-ReactDOM.render(<App> </App>, document.getElementById("content"));
+ReactDOM.render(<ProductList> </ProductList>, document.getElementById("content"));
