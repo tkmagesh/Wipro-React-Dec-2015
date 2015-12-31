@@ -1,6 +1,7 @@
 const idSymbol = Symbol();
 const nameSymbol = Symbol();
 
+/*
 export default class Employee{
     
     constructor(id, name){
@@ -23,3 +24,15 @@ export default class Employee{
         console.log(this.id, this.name);
     }
 }
+*/
+
+function Employee(defaults = {id : -1, name : '[default name]'}){
+    this.id = defaults.id;
+    this.name = defaults.name;
+}
+
+Employee.prototype.display = function(){
+    console.log(this.id, this.name);
+}
+
+export default Employee;
