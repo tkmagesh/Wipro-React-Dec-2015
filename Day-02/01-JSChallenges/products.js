@@ -15,12 +15,12 @@ function print(title, fn){
 /*
 Sort
 Filter
-Any
-All
-Min
-Max
-Sum
-Aggregate
+Any - [homework]
+All - [homework]
+Min - [homework]
+Max - [homework]
+Sum - [homework]
+Aggregate - [homework]
 GroupBy
 */
 
@@ -90,6 +90,84 @@ print("Sort", function(){
 });
 
 print("Filter", function(){
+    function filter(list, criteriaFn){
+        var result = [];
+        for(var i=0; i<list.length; i++)
+            if (criteriaFn(list[i]) )
+                result.push(list[i]);
+        return result;
+    }
+    function negate(fn){
+        return function(){
+            return !fn.apply(this, arguments);
+        }
+    }
+    var category1ProductCriteria = function(product){
+        return product.category === 1;
+    }
     //Filter all category-1 products
+    print("Category 1 products", function(){
+        var category1Products = filter(products, category1ProductCriteria);
+        console.table(category1Products);
+    });
+    print("Non Category 1 products", function(){
+        /*var nonCategory1ProductCriteria = function(product){
+            return !category1ProductCriteria(product);
+        }*/
+        var nonCategory1ProductCriteria = negate(category1ProductCriteria);
+        var nonCategory1Products = filter(products, nonCategory1ProductCriteria);
+        console.table(nonCategory1Products);
+    });
     //Filter all costly products (cost > 50)
-})
+    var costlyProductCriteria = function(product){
+        return product.cost > 50;
+    }
+    print("Costly products (cost > 50)", function(){
+
+        var costlyProducts = filter(products, costlyProductCriteria);
+        console.table(costlyProducts);
+    });
+    print("affordable products (!costly )", function(){
+        /*var affordableProductCriteria = function(product){
+            return !costlyProductCriteria(product);
+        }*/
+        var affordableProductCriteria = negate(costlyProductCriteria);
+        var affordableProducts = filter(products, affordableProductCriteria);
+        console.table(affordableProducts);
+    });
+});
+
+print("GroupBy", function(){
+    function groupBy(list, keySelector){
+        var result = {};
+        for(var i=0; i<list.length; i++){
+            var item = list[i];
+            var key = keySelector(item);
+            result[key] = result[key] || [];
+            result[key].push(item);
+        }
+        return result;
+    };
+    function printGroup(groupedObj){
+        for(var key in groupedObj){
+            print("Key - " + key, function(){
+                console.table(groupedObj[key]);
+            });
+        }
+    }
+    print("Products By Category", function(){
+        var categoryKeySelector = function(product){
+            return product.category;
+        };
+        var productsByCategory = groupBy(products, categoryKeySelector);
+        printGroup(productsByCategory);
+    });
+
+    print("Products By Cost", function(){
+        var keySelectorByCost = function(product){
+            return product.cost > 50 ? "costly" : "affordable";
+        }
+        var productsByCost = groupBy(products, keySelectorByCost);
+        printGroup(productsByCost);
+    });
+});
