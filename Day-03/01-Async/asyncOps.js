@@ -66,6 +66,7 @@ var asyncAdder = (function(){
 
 /* Async Using Promise*/
 
+/*
 function addAsyncPromise(x,y){
     console.log("[Provider] processing ", x , " and ", y);
     var promise = new Promise(function(resolve, reject){
@@ -77,7 +78,18 @@ function addAsyncPromise(x,y){
     });
     return promise;
 }
+*/
 
+function addAsyncPromise(x,y){
+    console.log("[Provider] processing ", x , " and ", y);
+    var deferred = Promise.defer();
+    setTimeout(function(){
+        var result = x + y;
+        console.log("[Provider] returning result");
+        deferred.resolve(result);
+     },10000);
+    return deferred.promise;
+}
 
 
 

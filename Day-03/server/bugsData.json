@@ -1,0 +1,19 @@
+{
+  "bugs": [
+    {
+      "id": 1,
+      "name": "Input validation error",
+      "isClsoed": false
+    },
+    {
+      "id": 2,
+      "name": "Server communication failure",
+      "isClsoed": false
+    },
+    {
+      "id": 3,
+      "name": "Data persistence fails often",
+      "isClsoed": false
+    }
+  ]
+}
