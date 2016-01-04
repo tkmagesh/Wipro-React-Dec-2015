@@ -3,17 +3,37 @@
     {
       "id": 1,
       "name": "Input validation error",
-      "isClsoed": false
+      "isClosed": true
     },
     {
       "id": 2,
       "name": "Server communication failure",
-      "isClsoed": false
+      "isClosed": true
     },
     {
       "id": 3,
       "name": "Data persistence fails often",
-      "isClsoed": false
+      "isClosed": false
+    },
+    {
+      "name": "ajax fails",
+      "isClosed": false,
+      "id": 4
+    },
+    {
+      "name": "Business rules dont run",
+      "isClosed": false,
+      "id": 5
+    },
+    {
+      "name": "Object reference not found",
+      "isClosed": false,
+      "id": 6
+    },
+    {
+      "name": "blah blah blah",
+      "isClosed": false,
+      "id": 7
     }
   ]
 }
