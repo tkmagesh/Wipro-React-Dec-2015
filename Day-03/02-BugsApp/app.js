@@ -1,15 +1,75 @@
-var BugsList = React.createClass({
-    fetchBugsFromServer : function(){
+var bugStore = (function(){
+    var list = [];
+    function loadData(){
         return fetch("http://localhost:3000/bugs")
-                    .then(function(response){
-                        return response.json();
-                    });
-    },
-    componentDidMount : function(){
-        this.fetchBugsFromServer()
+            .then(function(response){
+                return response.json();
+            }).then(function(bugs){
+                list = list.concat(bugs);
+                console.log(list);
+                return list;
+            });
+    }
+    function getAll(){
+        var deferred = Promise.defer();
+        if (!list.length){
+            return loadData().then(function(){
+                return list;
+            });
+        } else {
+            deferred.resolve(list);
+            onChange();
+            return deferred.promise;
+        }
+    }
+    function save(bug){
+        if (bug.id){
+          return $.ajax({
+            url : "http://localhost:3000/bugs/" + bug.id,
+            method : "put",
+            dataType : "json",
+            contentType : "application/json",
+            data : JSON.stringify(bug)
+            });
+        } else {
+            $.ajax({
+                url : "http://localhost:3000/bugs",
+                method : "post",
+                dataType : "json",
+                contentType : "application/json",
+                data : JSON.stringify(bug)
+            }).then(function(data){
+                list.push(data);
+                onChange();
+            })
+        }
+    }
+    var callbacks = [];
+    function addOnChange (callbackFn){
+        callbacks.push(callbackFn);
+    }
+    function onChange(){
+        for(var i=0; i<callbacks.length; i++){
+            callbacks[i](list);
+        }
+    }
+    return {
+        save : save,
+        getAll : getAll,
+        addOnChange : addOnChange
+    }
+})();
+var BugsList = React.createClass({
+    updateList : function(list){
+        this.props.store.getAll()
             .then(function(bugs){
                 this.setState({list : bugs})
             }.bind(this))
+    },
+    componentDidMount : function(){
+        console.log(this.props.store);
+        this.props.store.addOnChange(this.updateList.bind(this));
+        this.updateList();
     },
     getInitialState : function(){
         return {
@@ -19,22 +79,12 @@ var BugsList = React.createClass({
     onAddBug : function(){
         console.log("onAddBug triggered");
         var bugName = this.refs.txtBugName.value;
-        var bugsList = this.state.list;
-        $.ajax({
-            url : "http://localhost:3000/bugs",
-            method : "post",
-            dataType : "json",
-            contentType : "application/json",
-            data : JSON.stringify({name : bugName, isClosed : false})
-        }).then(function(newBug){
-            bugsList.push(newBug);
-            this.setState({list : bugsList});
-        }.bind(this));
+        this.props.store.save({name : bugName, isClosed : false});
     },
     render : function(){
         var BugItems = this.state.list.map(function(bug){
             return (
-                <BugItem bug={bug} key={bug.id}></BugItem>
+                <BugItem bug={bug} key={bug.id} store={this.props.store}></BugItem>
             );
         }.bind(this));
         return (
@@ -59,15 +109,7 @@ var BugItem = React.createClass({
     toggleBug : function(){
         var bug = this.props.bug;
         bug.isClosed = !bug.isClosed;
-        $.ajax({
-            url : "http://localhost:3000/bugs/" + this.props.bug.id,
-            data : JSON.stringify(bug),
-            method : 'PUT',
-            dataType : "json",
-            contentType : "application/json"
-        }).then(function(data){
-            console.log(data);
-        }.bind(this))
+        this.props.store.save(bug);
     },
     render : function(){
         return (
@@ -79,4 +121,4 @@ var BugItem = React.createClass({
         );
     }
 })
-ReactDOM.render(<BugsList> </BugsList>, document.getElementById("content"));
+ReactDOM.render(<BugsList store={bugStore}> </BugsList>, document.getElementById("content"));

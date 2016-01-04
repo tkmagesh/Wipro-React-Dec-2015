@@ -34,6 +34,16 @@
       "name": "blah blah blah",
       "isClosed": false,
       "id": 7
+    },
+    {
+      "name": "new bug",
+      "isClosed": false,
+      "id": 8
+    },
+    {
+      "name": "new bug 2",
+      "isClosed": false,
+      "id": 9
     }
   ]
 }
